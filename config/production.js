@@ -7,4 +7,7 @@ module.exports = {
 		port: process.env["PORT"]
 	},
 	allowedKeys: process.env["ALLOWED_KEYS"].split(":"),
+	sentry: {
+		dsn: process.env["SENTRY_DSN"]
+	}
 };

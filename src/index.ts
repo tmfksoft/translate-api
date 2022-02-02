@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/node';
+import * as Tracing from '@sentry/tracing';
 
 import Config from 'config';
 import { v2 } from '@google-cloud/translate';
@@ -7,6 +9,14 @@ import Boom from '@hapi/boom';
 
 const { Translate } = v2;
 
+Sentry.init({
+	dsn: Config.get('sentry.dsn'),
+  
+	// Set tracesSampleRate to 1.0 to capture 100%
+	// of transactions for performance monitoring.
+	// We recommend adjusting this value in production
+	tracesSampleRate: 1.0,
+  });
 
 class TranslateAPI {
 	private ProjectID: string;
@@ -53,8 +63,15 @@ class TranslateAPI {
 					mode?: string,
 				};
 
+				const transaction = Sentry.startTransaction({
+					op: "transaction",
+					name: "/api/v1/translate",
+				}, query);
+
 				const allowedKeys = Config.get('allowedKeys') as string[];
 				if (!allowedKeys.includes(query.key)) {
+					transaction.setHttpStatus(401);
+					transaction.finish();
 					return Boom.unauthorized("Invalid API Key");
 				}
 
@@ -62,11 +79,18 @@ class TranslateAPI {
 				const resultMode = query.mode || "json";
 				const result = await this.Client.translate(query.text, destLang);
 
+				
 				if (resultMode.toLowerCase() === "json") {
+					transaction.setHttpStatus(200);
+					transaction.finish();
 					return result;
 				} else if (resultMode.toLowerCase() === "simple") {
+					transaction.setHttpStatus(200);
+					transaction.finish();
 					return result[0];
 				} else {
+					transaction.setHttpStatus(400);
+					transaction.finish();
 					return Boom.badRequest("Unrecognised result mode, allowed modes are 'simple' and 'json'.");
 				}
 			}
