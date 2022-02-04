@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/node';
 import * as Tracing from '@sentry/tracing';
 
-import Config from 'config';
+import Config from 'vault-config';
 import { v2 } from '@google-cloud/translate';
 import Hapi from '@hapi/hapi';
 import Joi from 'joi';

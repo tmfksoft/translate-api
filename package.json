@@ -4,7 +4,7 @@
   "main": "build/index.js",
   "license": "MIT",
   "scripts": {
-    "start": "node build/index.js",
+    "start": "vault-config && node build/index.js",
     "build": "rm -rf build && tsc"
   },
   "devDependencies": {
@@ -21,6 +21,8 @@
     "@types/hapi__boom": "^9.0.1",
     "@types/hapi__hapi": "^20.0.10",
     "config": "^3.3.7",
-    "joi": "^17.6.0"
+    "joi": "^17.6.0",
+    "vault": "https://github.com/tmfksoft/vault-config.git",
+    "vault-config": "https://github.com/tmfksoft/vault-config.git"
   }
 }

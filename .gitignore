@@ -4,3 +4,4 @@ package-lock.json
 yarn.lock
 config/development.js
 config/development.json
+.vault-overrides.json
